@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎵 Аудио Конвертер</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .upload-area {
+            border: 3px dashed #3498db;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #2980b9;
+            background: #f8f9fa;
+        }
+
+        .upload-area.dragover {
+            border-color: #27ae60;
+            background: #e8f5e8;
+        }
+
+        .upload-icon {
+            font-size: 3em;
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .format-selector {
+            margin: 30px 0;
+        }
+
+        .format-selector label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .format-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .format-option {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .format-option:hover {
+            border-color: #3498db;
+            transform: translateY(-2px);
+        }
+
+        .format-option.selected {
+            border-color: #27ae60;
+            background: #27ae60;
+            color: white;
+        }
+
+        .convert-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .convert-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(39, 174, 96, 0.3);
+        }
+
+        .convert-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+        }
+
+        .status.info {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .file-info {
+            margin-top: 15px;
+            padding: 15px;
+            background: #e8f4fd;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .supported-formats {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .format-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .format-badge {
+            background: #3498db;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎵 Аудио Конвертер</h1>
+            <p>Бесплатное онлайн-преобразование аудиофайлов между популярными форматами</p>
+        </div>
+
+        <div class="content">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📁</div>
+                <h3>Перетащите аудиофайл сюда или нажмите для выбора</h3>
+                <p>Поддерживаются все популярные аудиоформаты</p>
+                <input type="file" id="fileInput" class="file-input" accept="audio/*">
+            </div>
+
+            <div class="file-info" id="fileInfo">
+                <strong>Выбранный файл:</strong> <span id="fileName"></span>
+                <br>
+                <strong>Размер:</strong> <span id="fileSize"></span>
+            </div>
+
+            <div class="format-selector">
+                <label>Выберите целевой формат:</label>
+                <div class="format-grid" id="formatGrid">
+                    <!-- Форматы будут добавлены через JavaScript -->
+                </div>
+            </div>
+
+            <button class="convert-btn" id="convertBtn" disabled>
+                🎯 Начать конвертацию
+            </button>
+
+            <div class="status" id="status"></div>
+
+            <div class="supported-formats">
+                <h3>📋 Поддерживаемые форматы конвертации:</h3>
+                <div class="format-list" id="formatList">
+                    <!-- Список форматов будет добавлен через JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Получаем форматы из шаблона
+        const formats = {{ formats_json | safe }};
+
+        // Элементы DOM
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const formatGrid = document.getElementById('formatGrid');
+        const formatList = document.getElementById('formatList');
+        const convertBtn = document.getElementById('convertBtn');
+        const status = document.getElementById('status');
+
+        let selectedFile = null;
+        let selectedFormat = 'mp3';
+
+        // Инициализация форматов
+        function initializeFormats() {
+            // Сетка выбора формата
+            formats.forEach(format => {
+                const formatOption = document.createElement('div');
+                formatOption.className = `format-option ${format.key === 'mp3' ? 'selected' : ''}`;
+                formatOption.innerHTML = `
+                    <div style="font-size: 1.5em; margin-bottom: 5px;">🎵</div>
+                    <div>${format.name}</div>
+                `;
+                formatOption.addEventListener('click', () => selectFormat(format.key, formatOption));
+                formatGrid.appendChild(formatOption);
+            });
+
+            // Список всех форматов
+            formats.forEach(format => {
+                const formatBadge = document.createElement('span');
+                formatBadge.className = 'format-badge';
+                formatBadge.textContent = format.name;
+                formatList.appendChild(formatBadge);
+            });
+        }
+
+        // Выбор формата
+        function selectFormat(format, element) {
+            selectedFormat = format;
+
+            // Убираем выделение у всех элементов
+            document.querySelectorAll('.format-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+
+            // Добавляем выделение выбранному элементу
+            element.classList.add('selected');
+            updateConvertButton();
+        }
+
+        // Обновление состояния кнопки конвертации
+        function updateConvertButton() {
+            convertBtn.disabled = !selectedFile;
+        }
+
+        // Форматирование размера файла
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Обработчики событий для drag and drop
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+
+            if (e.dataTransfer.files.length) {
+                handleFileSelect(e.dataTransfer.files[0]);
+            }
+        });
+
+        // Обработчик выбора файла
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                handleFileSelect(e.target.files[0]);
+            }
+        });
+
+        // Обработка выбранного файла
+        function handleFileSelect(file) {
+            // Проверка типа файла
+            if (!file.type.startsWith('audio/')) {
+                showStatus('Пожалуйста, выберите аудио файл', 'error');
+                return;
+            }
+
+            selectedFile = file;
+
+            // Показываем информацию о файле
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+            fileInfo.style.display = 'block';
+
+            updateConvertButton();
+            showStatus('Файл готов к конвертации', 'info');
+        }
+
+        // Показать статус
+        function showStatus(message, type) {
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+        }
+
+        // Скрыть статус
+        function hideStatus() {
+            status.style.display = 'none';
+        }
+
+        // Обработчик конвертации
+        convertBtn.addEventListener('click', async () => {
+            if (!selectedFile) return;
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            showStatus('Конвертация началась... Пожалуйста, подождите', 'info');
+            convertBtn.disabled = true;
+
+            try {
+                const response = await fetch(`/convert/${selectedFormat}`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    // Получаем blob и создаем ссылку для скачивания
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = `converted.${selectedFormat}`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+
+                    showStatus('Конвертация завершена успешно! Файл скачивается...', 'info');
+
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Неизвестная ошибка');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus(`Ошибка конвертации: ${error.message}`, 'error');
+            } finally {
+                convertBtn.disabled = false;
+            }
+        });
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', initializeFormats);
+    </script>
+</body>
+</html>
