@@ -1,68 +1,57 @@
-# Инструкция по установке и запуску Audio Converter API (Linux Ubuntu)
+SEVER_IP=192.168.1.**
 
-## 1. Установка системных зависимостей
+----
 
-Установите FFmpeg и Python (если не установлен):
+ssh alex@$(SERVER_IP)
 
-```bash
-sudo apt update
-sudo apt install -y ffmpeg python3 python3-pip python3-venv
-```
+git clone git clone https://github.com/samloik/sounds-file-converter.git
+cd sounds-file-converter
 
-## 2. Создание виртуального окружения
-
-```bash
-cd /path/to/sounds-file-converter
-python3 -m venv venv
-```
-
-## 3. Активация виртуального окружения
-
-```bash
+cd sounds-file-converter && python -m venv venv 
 source venv/bin/activate
-```
 
-## 4. Установка зависимостей Python
 
-```bash
-pip install -r requirements.txt
-```
 
-## 5. Запуск сервера
 
-```bash
-python main.py
-```
+----
 
-Сервер запустится на **http://localhost:8080**
+Проанализировал код main.py. Вот описание:
 
-## 6. Открыть в браузере
+О проекте
+Audio Converter API — веб-сервис на FastAPI для конвертации аудиофайлов между 19 форматами.
 
-Перейдите на `http://localhost:8080`
-
----
-
-## Быстрый запуск (все команды вместе)
-
-```bash
-sudo apt update && sudo apt install -y ffmpeg python3 python3-pip python3-venv
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-python main.py
-```
-
----
-
-## Поддерживаемые форматы
-
+Поддерживаемые форматы:
 MP3, WAV, AAC, OGG, FLAC, AIFF, WMA, M4A, Opus, AC3, AU, PCM, MP2, MP4, WebM, MKV, MOV, 3GP, AIF
 
----
+Основные возможности:
+Загрузка аудиофайлов через веб-интерфейс
+Конвертация в выбранный формат
+Скачивание результата с исходным именем файла
+Автоматическая очистка временных файлов
+REST API для программной работы
+Структура:
+sounds-file-converter/
+├── main.py              # Основной код приложения
+├── templates/           # HTML-шаблоны (index.html)
+├── uploads/             # Временные загруженные файлы
+├── converted/           # Сконвертированные файлы
+└── requirements.txt     # Зависимости
+Как запускать
+1. Активировать venv:
+.\venv\Scripts\Activate.ps1
+2. Убедиться, что установлен FFmpeg:
+Скачать: https://ffmpeg.org/download.html
+Добавить в PATH или положить ffmpeg.exe в папку проекта
 
-## API Endpoints
+3. Запустить сервер:
+python main.py
+Сервер запустится на http://localhost:8080
 
-- `GET /` — главная страница с формой загрузки
-- `POST /convert/{format}` — конвертация файла
-- `GET /formats` — список поддерживаемых форматов
-- `GET /health` — проверка состояния сервиса
+4. Открыть в браузере:
+Перейти на http://localhost:8080 для доступа к веб-интерфейсу
+
+API endpoints:
+GET / — главная страница с формой загрузки
+POST /convert/{format} — конвертация файла
+GET /formats — список поддерживаемых форматов
+GET /health — проверка состояния сервиса

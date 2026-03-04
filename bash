@@ -2,17 +2,17 @@
 mkdir -p templates static
 
 # Создайте файл requirements.txt
-cat > requirements.txt << 'EOF'
-fastapi==0.104.1
-uvicorn==0.24.0
-pydub==0.25.1
-python-multipart==0.0.6
-EOF
+#cat > requirements.txt << 'EOF'
+#fastapi==0.104.1
+#uvicorn==0.24.0
+#pydub==0.25.1
+#python-multipart==0.0.6
+#EOF
 
 # Создайте файл запуска
 cat > run.py << 'EOF'
 import uvicorn
-ls
+
 if __name__ == "__main__":
     uvicorn.run(
         "main:app",
