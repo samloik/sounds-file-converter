@@ -1,0 +1,68 @@
+# Инструкция по установке и запуску Audio Converter API (Linux Ubuntu)
+
+## 1. Установка системных зависимостей
+
+Установите FFmpeg и Python (если не установлен):
+
+```bash
+sudo apt update
+sudo apt install -y ffmpeg python3 python3-pip python3-venv
+```
+
+## 2. Создание виртуального окружения
+
+```bash
+cd /path/to/sounds-file-converter
+python3 -m venv venv
+```
+
+## 3. Активация виртуального окружения
+
+```bash
+source venv/bin/activate
+```
+
+## 4. Установка зависимостей Python
+
+```bash
+pip install -r requirements.txt
+```
+
+## 5. Запуск сервера
+
+```bash
+python main.py
+```
+
+Сервер запустится на **http://localhost:8080**
+
+## 6. Открыть в браузере
+
+Перейдите на `http://localhost:8080`
+
+---
+
+## Быстрый запуск (все команды вместе)
+
+```bash
+sudo apt update && sudo apt install -y ffmpeg python3 python3-pip python3-venv
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python main.py
+```
+
+---
+
+## Поддерживаемые форматы
+
+MP3, WAV, AAC, OGG, FLAC, AIFF, WMA, M4A, Opus, AC3, AU, PCM, MP2, MP4, WebM, MKV, MOV, 3GP, AIF
+
+---
+
+## API Endpoints
+
+- `GET /` — главная страница с формой загрузки
+- `POST /convert/{format}` — конвертация файла
+- `GET /formats` — список поддерживаемых форматов
+- `GET /health` — проверка состояния сервиса
